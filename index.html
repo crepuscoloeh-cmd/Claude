@@ -162,77 +162,134 @@
         }
         
         .conversation-list {
-            display: grid;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
         }
         
         .conversation-item {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(168, 216, 234, 0.1);
-            border-left: 4px solid #a8d8ea;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+            background: #fefefe;
         }
         
         .conversation-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(168, 216, 234, 0.15);
+            background: #f8fafc;
+            border-color: #a8d8ea;
+        }
+        
+        .conversation-checkbox {
+            margin-right: 12px;
+            width: 16px;
+            height: 16px;
+            accent-color: #a8d8ea;
+        }
+        
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
         }
         
         .conversation-title {
-            font-weight: 600;
+            font-weight: 500;
             color: #4a5568;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            font-size: 14px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .conversation-meta {
             color: #718096;
-            font-size: 0.9em;
+            font-size: 12px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .select-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f7fbff;
+            border-radius: 8px;
         }
         
-        .download-btn {
-            background: linear-gradient(135deg, #a8d8ea, #aa96da);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+        .select-all-btn, .select-none-btn {
+            background: none;
+            border: 1px solid #a8d8ea;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
-        .download-btn:hover {
-            transform: scale(1.05);
+        .select-all-btn:hover, .select-none-btn:hover {
+            background: #a8d8ea;
+            color: white;
         }
         
-        .download-all {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
+        .selected-count {
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
         }
         
-        .download-all-btn {
+        .download-selected-btn {
             background: linear-gradient(135deg, #fcbad3, #ff9a9e);
             color: white;
             border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 16px;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(252, 186, 211, 0.4);
+            box-shadow: 0 4px 15px rgba(252, 186, 211, 0.4);
+            margin-right: 15px;
+        }
+        
+        .download-selected-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 186, 211, 0.6);
+        }
+        
+        .download-selected-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .download-all-btn {
+            background: linear-gradient(135deg, #a8d8ea, #aa96da);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(168, 216, 234, 0.4);
         }
         
         .download-all-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(252, 186, 211, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 216, 234, 0.6);
         }
         
         @media (max-width: 768px) {
@@ -290,9 +347,20 @@
         
         <div id="results" class="results">
             <h2>📄 处理结果</h2>
+            
+            <div class="select-controls">
+                <div class="selected-count">已选择: <span id="selectedCount">0</span> 个对话</div>
+                <div>
+                    <button id="selectAllButton" class="select-all-btn">全选</button>
+                    <button id="selectNoneButton" class="select-none-btn">取消全选</button>
+                </div>
+            </div>
+            
             <div id="conversationList" class="conversation-list"></div>
-            <div class="download-all">
-                <button id="downloadAllButton" class="download-all-btn">📦 打包下载全部文件</button>
+            
+            <div class="download-controls" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                <button id="downloadSelectedButton" class="download-selected-btn" disabled>📦 下载选中文件</button>
+                <button id="downloadAllButton" class="download-all-btn">📦 下载全部文件</button>
             </div>
         </div>
         
@@ -560,16 +628,92 @@
                 const item = document.createElement('div');
                 item.className = 'conversation-item';
                 item.innerHTML = `
-                    <div class="conversation-title">${file.title}</div>
-                    <div class="conversation-meta">
-                        <span>${file.messageCount} 条消息 | ${file.createdAt}</span>
-                        <button class="download-btn" onclick="downloadFile(${index})">下载</button>
+                    <input type="checkbox" class="conversation-checkbox" data-index="${index}">
+                    <div class="conversation-info">
+                        <div class="conversation-title">${file.title}</div>
+                        <div class="conversation-meta">
+                            <span>${file.messageCount} 条消息</span>
+                            <span>${file.createdAt}</span>
+                            <span>${(file.content.length / 1024).toFixed(1)} KB</span>
+                        </div>
                     </div>
                 `;
                 listDiv.appendChild(item);
             });
             
+            // 添加事件监听器
+            setupSelectionControls();
+            
             resultsDiv.style.display = 'block';
+        }
+        
+        // 设置选择控制功能
+        function setupSelectionControls() {
+            const checkboxes = document.querySelectorAll('.conversation-checkbox');
+            const selectAllBtn = document.getElementById('selectAllButton');
+            const selectNoneBtn = document.getElementById('selectNoneButton');
+            const downloadSelectedBtn = document.getElementById('downloadSelectedButton');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            
+            // 更新选中计数
+            function updateSelectedCount() {
+                const selectedCount = document.querySelectorAll('.conversation-checkbox:checked').length;
+                selectedCountSpan.textContent = selectedCount;
+                downloadSelectedBtn.disabled = selectedCount === 0;
+            }
+            
+            // 复选框变化事件
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedCount);
+            });
+            
+            // 全选按钮
+            selectAllBtn.addEventListener('click', () => {
+                checkboxes.forEach(checkbox => checkbox.checked = true);
+                updateSelectedCount();
+            });
+            
+            // 取消全选按钮
+            selectNoneBtn.addEventListener('click', () => {
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                updateSelectedCount();
+            });
+            
+            // 下载选中文件按钮
+            downloadSelectedBtn.addEventListener('click', downloadSelectedFiles);
+            
+            // 初始化计数
+            updateSelectedCount();
+        }
+        
+        // 下载选中的文件
+        async function downloadSelectedFiles() {
+            const selectedCheckboxes = document.querySelectorAll('.conversation-checkbox:checked');
+            if (selectedCheckboxes.length === 0) return;
+            
+            if (selectedCheckboxes.length === 1) {
+                // 如果只选中一个文件，直接下载
+                const index = parseInt(selectedCheckboxes[0].dataset.index);
+                downloadFile(index);
+            } else {
+                // 多个文件，打包下载
+                const JSZip = await import('https://cdn.skypack.dev/jszip');
+                const zip = new JSZip.default();
+                
+                selectedCheckboxes.forEach(checkbox => {
+                    const index = parseInt(checkbox.dataset.index);
+                    const file = processedFiles[index];
+                    zip.file(file.filename, file.content);
+                });
+                
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `selected_conversations_${selectedCheckboxes.length}个对话.zip`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
         }
         
         // 下载单个文件
