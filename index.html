@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude对话切分器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #a8d8ea 0%, #aa96da 50%, #fcbad3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(168, 216, 234, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #a8d8ea 0%, #aa96da 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: #4a5568;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+        
+        .upload-section {
+            padding: 40px;
+            text-align: center;
+            background: #f7fbff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-button {
+            background: linear-gradient(135deg, #a8d8ea, #aa96da);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(168, 216, 234, 0.4);
+        }
+        
+        .file-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(168, 216, 234, 0.6);
+        }
+        
+        .process-button {
+            background: linear-gradient(135deg, #fcbad3, #ff9a9e);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(252, 186, 211, 0.4);
+            margin-left: 20px;
+            display: none;
+        }
+        
+        .process-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(252, 186, 211, 0.6);
+        }
+        
+        .process-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(168, 216, 234, 0.15);
+            border-radius: 10px;
+            color: #4a5568;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .progress {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #a8d8ea, #aa96da);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .status {
+            margin-top: 10px;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .results {
+            padding: 40px;
+            display: none;
+            background: #f7fbff;
+        }
+        
+        .results h2 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        .conversation-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .conversation-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(168, 216, 234, 0.1);
+            border-left: 4px solid #a8d8ea;
+            transition: all 0.3s ease;
+        }
+        
+        .conversation-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 216, 234, 0.15);
+        }
+        
+        .conversation-title {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .conversation-meta {
+            color: #718096;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #a8d8ea, #aa96da);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .download-all {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .download-all-btn {
+            background: linear-gradient(135deg, #fcbad3, #ff9a9e);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(252, 186, 211, 0.4);
+        }
+        
+        .download-all-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(252, 186, 211, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .upload-section {
+                padding: 30px 20px;
+            }
+            
+            .process-button {
+                margin-left: 0;
+                margin-top: 15px;
+                display: block;
+                width: 100%;
+            }
+            
+            .conversation-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        .footer {
+            background: #a8d8ea;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Claude对话切分器</h1>
+            <p>轻松切分Claude导出的对话文件，支持CoT思考分离</p>
+        </div>
+        
+        <div class="upload-section">
+            <div class="file-input-container">
+                <input type="file" id="fileInput" class="file-input" accept=".json">
+                <button class="file-button">📁 选择 conversations.json 文件</button>
+            </div>
+            <button id="processButton" class="process-button">🚀 开始处理</button>
+            
+            <div id="fileInfo" class="file-info"></div>
+            
+            <div id="progress" class="progress">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div id="status" class="status">准备处理...</div>
+            </div>
+        </div>
+        
+        <div id="results" class="results">
+            <h2>📄 处理结果</h2>
+            <div id="conversationList" class="conversation-list"></div>
+            <div class="download-all">
+                <button id="downloadAllButton" class="download-all-btn">📦 打包下载全部文件</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Made with 💕 for 宝宝 | 支持Unicode解码、Thinking思考分离、完美格式化
+        </div>
+    </div>
+    
+    <script>
+        let conversations = [];
+        let processedFiles = [];
+        
+        // 格式化时间戳，强制转换为东八区时间
+        function formatTimestamp(timestampStr) {
+            try {
+                // 解析ISO时间戳
+                let dt = new Date(timestampStr);
+                
+                // 如果是字符串格式，确保正确解析
+                if (typeof timestampStr === 'string') {
+                    // 处理Z结尾的UTC时间
+                    if (timestampStr.endsWith('Z')) {
+                        dt = new Date(timestampStr);
+                    } else if (timestampStr.includes('T')) {
+                        dt = new Date(timestampStr + 'Z'); // 确保作为UTC处理
+                    } else {
+                        dt = new Date(timestampStr);
+                    }
+                }
+                
+                // 转换为东八区时间 (UTC+8)
+                const utcTime = dt.getTime();
+                const chinaTime = new Date(utcTime + (8 * 60 * 60 * 1000)); // 加8小时
+                
+                // 格式化为易读格式
+                const year = chinaTime.getUTCFullYear();
+                const month = String(chinaTime.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(chinaTime.getUTCDate()).padStart(2, '0');
+                const hour = String(chinaTime.getUTCHours()).padStart(2, '0');
+                const minute = String(chinaTime.getUTCMinutes()).padStart(2, '0');
+                const second = String(chinaTime.getUTCSeconds()).padStart(2, '0');
+                
+                return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
+            } catch (error) {
+                console.error('时间戳转换错误:', error, timestampStr);
+                return timestampStr;
+            }
+        }
+        
+        // 提取消息内容，按原始顺序处理多个CoT和正文段落
+        function extractMessageContent(message) {
+            let mainText = "";
+            let contentBlocks = [];
+            
+            // 主要文本内容（作为fallback）
+            if (message.text) {
+                mainText = message.text;
+            }
+            
+            // 处理content数组中的内容，保持原始顺序
+            if (message.content && Array.isArray(message.content)) {
+                for (const contentItem of message.content) {
+                    if (contentItem.type === 'thinking') {
+                        // CoT思考内容
+                        const thinking = contentItem.thinking || '';
+                        if (thinking.trim()) {
+                            contentBlocks.push({
+                                type: 'cot',
+                                content: thinking.trim()
+                            });
+                        }
+                    } else if (contentItem.type === 'text') {
+                        // 正文内容
+                        const text = contentItem.text || '';
+                        if (text.trim()) {
+                            contentBlocks.push({
+                                type: 'text',
+                                content: text.trim()
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // 如果没有content数组，使用主文本
+            if (contentBlocks.length === 0 && mainText) {
+                contentBlocks.push({
+                    type: 'text',
+                    content: mainText.trim()
+                });
+            }
+            
+            return contentBlocks;
+        }
+        
+        // 处理单个对话
+        function processConversation(conversation, index) {
+            const convName = conversation.name || `Conversation_${index}`;
+            const convUuid = conversation.uuid || `unknown_${index}`;
+            const createdAt = formatTimestamp(conversation.created_at || '');
+            
+            const messages = conversation.chat_messages || [];
+            if (messages.length === 0) {
+                return null;
+            }
+            
+            const contentLines = [];
+            contentLines.push(`对话标题: ${convName}`);
+            contentLines.push(`对话ID: ${convUuid}`);
+            contentLines.push(`创建时间: ${createdAt}`);
+            contentLines.push(`消息数量: ${messages.length}`);
+            contentLines.push('='.repeat(80));
+            contentLines.push('');
+            
+            for (let msgIdx = 0; msgIdx < messages.length; msgIdx++) {
+                const message = messages[msgIdx];
+                const sender = message.sender || 'unknown';
+                const timestamp = formatTimestamp(message.created_at || '');
+                
+                const contentBlocks = extractMessageContent(message);
+                
+                // 时间戳用[]框起来
+                contentLines.push(`[${timestamp}]`);
+                
+                if (sender === 'human') {
+                    contentLines.push('User：');
+                    if (contentBlocks.length > 0) {
+                        // User通常只有一个text block
+                        const textBlocks = contentBlocks.filter(block => block.type === 'text');
+                        if (textBlocks.length > 0) {
+                            contentLines.push(textBlocks[0].content);
+                        } else {
+                            contentLines.push('(空消息)');
+                        }
+                    } else {
+                        contentLines.push('(空消息)');
+                    }
+                } else if (sender === 'assistant') {
+                    contentLines.push('Claude：');
+                    
+                    // 按原始顺序处理所有content blocks
+                    for (let i = 0; i < contentBlocks.length; i++) {
+                        const block = contentBlocks[i];
+                        
+                        if (block.type === 'cot') {
+                            contentLines.push('Thinking：');
+                            contentLines.push(block.content);
+                            contentLines.push(''); // Thinking后空一行
+                        } else if (block.type === 'text') {
+                            // 正文内容加上Text：标签
+                            contentLines.push('Text：');
+                            contentLines.push(block.content);
+                            
+                            // 如果后面还有content block，加个空行
+                            if (i < contentBlocks.length - 1) {
+                                contentLines.push('');
+                            }
+                        }
+                    }
+                    
+                    // 如果没有任何content blocks
+                    if (contentBlocks.length === 0) {
+                        contentLines.push('(空回复)');
+                    }
+                    
+                    // 只有在Claude回复后且不是最后一条消息时才加分割线
+                    if (msgIdx < messages.length - 1) {
+                        contentLines.push('');
+                        contentLines.push('─'.repeat(20));
+                        contentLines.push('');
+                    }
+                } else {
+                    contentLines.push(`${sender.charAt(0).toUpperCase() + sender.slice(1)}：`);
+                    if (contentBlocks.length > 0) {
+                        const textBlocks = contentBlocks.filter(block => block.type === 'text');
+                        if (textBlocks.length > 0) {
+                            contentLines.push(textBlocks[0].content);
+                        } else {
+                            contentLines.push('(空消息)');
+                        }
+                    } else {
+                        contentLines.push('(空消息)');
+                    }
+                }
+                
+                // 如果不是Claude回复，只加一个空行
+                if (sender !== 'assistant' && msgIdx < messages.length - 1) {
+                    contentLines.push('');
+                }
+            }
+            
+            const filename = `${String(index).padStart(3, '0')}_${convName.replace(/[<>:"/\\|?*]/g, '_').substring(0, 50)}_${convUuid.substring(0, 8)}.txt`;
+            const content = contentLines.join('\n');
+            
+            return { filename, content, title: convName, messageCount: messages.length, createdAt };
+        }
+        
+        // 文件选择处理
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileInfo').style.display = 'block';
+                document.getElementById('fileInfo').textContent = `已选择: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                document.getElementById('processButton').style.display = 'inline-block';
+            }
+        });
+        
+        // 处理文件
+        document.getElementById('processButton').addEventListener('click', async function() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('请先选择文件！');
+                return;
+            }
+            
+            this.disabled = true;
+            document.getElementById('progress').style.display = 'block';
+            document.getElementById('status').textContent = '正在读取文件...';
+            
+            try {
+                const text = await file.text();
+                conversations = JSON.parse(text);
+                
+                document.getElementById('status').textContent = `找到 ${conversations.length} 个对话，正在处理...`;
+                
+                processedFiles = [];
+                
+                for (let i = 0; i < conversations.length; i++) {
+                    const progress = ((i + 1) / conversations.length) * 100;
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                    document.getElementById('status').textContent = `处理中... ${i + 1}/${conversations.length}`;
+                    
+                    const result = processConversation(conversations[i], i + 1);
+                    if (result) {
+                        processedFiles.push(result);
+                    }
+                    
+                    // 添加小延迟以显示进度
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                
+                document.getElementById('status').textContent = `处理完成！成功处理 ${processedFiles.length} 个对话`;
+                
+                // 显示结果
+                displayResults();
+                
+            } catch (error) {
+                console.error('处理文件时出错:', error);
+                document.getElementById('status').textContent = `处理失败: ${error.message}`;
+            } finally {
+                this.disabled = false;
+            }
+        });
+        
+        // 显示处理结果
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            const listDiv = document.getElementById('conversationList');
+            
+            listDiv.innerHTML = '';
+            
+            processedFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'conversation-item';
+                item.innerHTML = `
+                    <div class="conversation-title">${file.title}</div>
+                    <div class="conversation-meta">
+                        <span>${file.messageCount} 条消息 | ${file.createdAt}</span>
+                        <button class="download-btn" onclick="downloadFile(${index})">下载</button>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+            });
+            
+            resultsDiv.style.display = 'block';
+        }
+        
+        // 下载单个文件
+        window.downloadFile = function(index) {
+            const file = processedFiles[index];
+            const blob = new Blob([file.content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+        
+        // 打包下载所有文件
+        document.getElementById('downloadAllButton').addEventListener('click', async function() {
+            if (processedFiles.length === 0) return;
+            
+            // 使用动态导入JSZip
+            const JSZip = await import('https://cdn.skypack.dev/jszip');
+            const zip = new JSZip.default();
+            
+            processedFiles.forEach(file => {
+                zip.file(file.filename, file.content);
+            });
+            
+            const content = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(content);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claude_conversations.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
