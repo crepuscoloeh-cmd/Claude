@@ -167,10 +167,32 @@
             gap: 8px;
             max-height: 400px;
             overflow-y: auto;
+            overflow-x: hidden;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             padding: 15px;
             background: white;
+            /* 防止页面跟着滚动 */
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .conversation-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .conversation-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+        
+        .conversation-list::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+        
+        .conversation-list::-webkit-scrollbar-thumb:hover {
+            background: #a8d8ea;
         }
         
         .conversation-item {
@@ -622,13 +644,23 @@
             const resultsDiv = document.getElementById('results');
             const listDiv = document.getElementById('conversationList');
             
+            // 按创建时间排序（最新的在上面）
+            const sortedFiles = [...processedFiles].sort((a, b) => {
+                const timeA = new Date(a.createdAt.replace(/\//g, '-')).getTime();
+                const timeB = new Date(b.createdAt.replace(/\//g, '-')).getTime();
+                return timeB - timeA; // 降序排列，最新的在上面
+            });
+            
             listDiv.innerHTML = '';
             
-            processedFiles.forEach((file, index) => {
+            sortedFiles.forEach((file, sortedIndex) => {
+                // 找到原始索引
+                const originalIndex = processedFiles.findIndex(f => f.filename === file.filename);
+                
                 const item = document.createElement('div');
                 item.className = 'conversation-item';
                 item.innerHTML = `
-                    <input type="checkbox" class="conversation-checkbox" data-index="${index}">
+                    <input type="checkbox" class="conversation-checkbox" data-index="${originalIndex}">
                     <div class="conversation-info">
                         <div class="conversation-title">${file.title}</div>
                         <div class="conversation-meta">
