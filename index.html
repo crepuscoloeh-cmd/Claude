@@ -15,49 +15,92 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #a8d8ea 0%, #aa96da 50%, #fcbad3 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(168, 216, 234, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(168, 216, 234, 0.3);
             overflow: hidden;
         }
         
         .header {
             background: linear-gradient(135deg, #a8d8ea 0%, #aa96da 100%);
-            padding: 40px 30px;
+            padding: 25px 20px;
             text-align: center;
-            color: #4a5568;
+            color: white;
         }
         
         .header h1 {
-            font-size: 2.8em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
         
         .header p {
-            font-size: 1.3em;
-            opacity: 0.85;
-            font-weight: 300;
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: 400;
         }
         
         .upload-section {
-            padding: 40px;
+            padding: 25px 20px;
+            background: #fafcff;
+        }
+
+        .name-settings {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .name-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .name-input-group label {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .name-input {
+            padding: 8px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            background: white;
+            color: #334155;
+            width: 100px;
             text-align: center;
-            background: #f7fbff;
-            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #a8d8ea;
+            box-shadow: 0 0 0 2px rgba(168, 216, 234, 0.15);
+        }
+
+        .upload-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
         .file-input-container {
             position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
         }
         
         .file-input {
@@ -71,39 +114,36 @@
         .file-button {
             background: linear-gradient(135deg, #a8d8ea, #aa96da);
             color: white;
-            padding: 15px 40px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 30px;
-            font-size: 16px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(168, 216, 234, 0.4);
         }
         
         .file-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(168, 216, 234, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(168, 216, 234, 0.4);
         }
         
         .process-button {
             background: linear-gradient(135deg, #fcbad3, #ff9a9e);
             color: white;
-            padding: 15px 40px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 30px;
-            font-size: 16px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(252, 186, 211, 0.4);
-            margin-left: 20px;
             display: none;
         }
         
         .process-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(252, 186, 211, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(252, 186, 211, 0.4);
         }
         
         .process-button:disabled {
@@ -113,25 +153,27 @@
         }
         
         .file-info {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(168, 216, 234, 0.15);
-            border-radius: 10px;
-            color: #4a5568;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: rgba(168, 216, 234, 0.1);
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 13px;
             font-weight: 500;
             display: none;
+            text-align: center;
         }
         
         .progress {
-            margin: 20px 0;
+            margin: 15px 0;
             display: none;
         }
         
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 4px;
             background: #e2e8f0;
-            border-radius: 3px;
+            border-radius: 2px;
             overflow: hidden;
         }
         
@@ -143,78 +185,55 @@
         }
         
         .status {
-            margin-top: 10px;
-            color: #718096;
-            font-size: 14px;
-        }
-        
-        .results {
-            padding: 40px;
-            display: none;
-            background: #f7fbff;
-        }
-        
-        .results h2 {
-            color: #4a5568;
-            margin-bottom: 30px;
-            font-size: 1.8em;
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 12px;
             text-align: center;
         }
         
+        .results {
+            display: none;
+            background: #fafcff;
+        }
+        
+        .results-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .results h2 {
+            color: #334155;
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
         .conversation-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
             max-height: 400px;
             overflow-y: auto;
-            overflow-x: hidden;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
-            background: white;
-            /* 防止页面跟着滚动 */
-            overscroll-behavior: contain;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .conversation-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .conversation-list::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
-        }
-        
-        .conversation-list::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 3px;
-        }
-        
-        .conversation-list::-webkit-scrollbar-thumb:hover {
-            background: #a8d8ea;
+            padding: 0;
         }
         
         .conversation-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid #f1f5f9;
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f5f9;
             transition: all 0.2s ease;
-            background: #fefefe;
+            background: white;
+            gap: 8px;
         }
         
         .conversation-item:hover {
             background: #f8fafc;
-            border-color: #a8d8ea;
         }
         
         .conversation-checkbox {
-            margin-right: 12px;
             width: 16px;
             height: 16px;
             accent-color: #a8d8ea;
+            flex-shrink: 0;
         }
         
         .conversation-info {
@@ -224,138 +243,372 @@
         
         .conversation-title {
             font-weight: 500;
-            color: #4a5568;
+            color: #334155;
             font-size: 14px;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         
         .conversation-meta {
-            color: #718096;
-            font-size: 12px;
+            font-size: 11px;
+            color: #64748b;
             display: flex;
-            gap: 15px;
+            gap: 8px;
         }
         
-        .select-controls {
+        .conversation-meta span {
+            white-space: nowrap;
+        }
+
+        .conversation-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            background: #f7fbff;
-            border-radius: 8px;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            min-width: 40px;
+        }
+
+        .preview-btn {
+            background: #a8d8ea;
+            color: white;
+        }
+
+        .preview-btn:hover {
+            background: #85c7de;
+        }
+
+        .download-btn {
+            background: #fcbad3;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #fa9bc4;
         }
         
-        .select-all-btn, .select-none-btn {
-            background: none;
-            border: 1px solid #a8d8ea;
-            color: #4a5568;
-            padding: 6px 12px;
-            border-radius: 6px;
+        .control-section {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .control-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 16px;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-        
-        .select-all-btn:hover, .select-none-btn:hover {
-            background: #a8d8ea;
-            color: white;
-        }
-        
-        .selected-count {
-            color: #4a5568;
-            font-size: 14px;
             font-weight: 500;
         }
         
-        .download-selected-btn {
-            background: linear-gradient(135deg, #fcbad3, #ff9a9e);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(252, 186, 211, 0.4);
-            margin-right: 15px;
-        }
-        
-        .download-selected-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(252, 186, 211, 0.6);
-        }
-        
-        .download-selected-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .download-all-btn {
-            background: linear-gradient(135deg, #a8d8ea, #aa96da);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(168, 216, 234, 0.4);
-        }
-        
-        .download-all-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(168, 216, 234, 0.6);
-        }
-        
-        @media (max-width: 768px) {
-            .upload-section {
-                padding: 30px 20px;
-            }
-            
-            .process-button {
-                margin-left: 0;
-                margin-top: 15px;
-                display: block;
-                width: 100%;
-            }
-            
-            .conversation-meta {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-        
-        .footer {
+        .select-all-button {
             background: #a8d8ea;
             color: white;
+        }
+        
+        .select-all-button:hover {
+            background: #85c7de;
+        }
+        
+        .select-none-button {
+            background: #aa96da;
+            color: white;
+        }
+        
+        .select-none-button:hover {
+            background: #9582d1;
+        }
+        
+        .download-selected-button {
+            background: #fcbad3;
+            color: white;
+        }
+        
+        .download-selected-button:hover:not(:disabled) {
+            background: #fa9bc4;
+        }
+        
+        .download-selected-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .download-all-button {
+            background: linear-gradient(135deg, #a8d8ea, #fcbad3);
+            color: white;
+        }
+        
+        .download-all-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(168, 216, 234, 0.3);
+        }
+        
+        .selection-info {
             text-align: center;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        /* 预览窗口样式 */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .preview-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #fafcff;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            margin: 0;
+        }
+
+        .preview-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .preview-close:hover {
+            background: #e2e8f0;
+        }
+
+        .preview-stats {
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 12px;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            min-height: 0;
+        }
+
+        .preview-text {
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #334155;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #fafcff;
             padding: 20px;
-            font-size: 14px;
-            opacity: 0.9;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .preview-text::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .preview-text::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .preview-text::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .preview-text::-webkit-scrollbar-thumb:hover {
+            background: #a8d8ea;
+        }
+
+        .preview-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #e2e8f0;
+            background: #fafcff;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .footer-button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: #a8d8ea;
+            color: white;
+        }
+
+        .copy-button:hover {
+            background: #85c7de;
+        }
+
+        .download-single-button {
+            background: #fcbad3;
+            color: white;
+        }
+
+        .download-single-button:hover {
+            background: #fa9bc4;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+
+            .name-settings {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .upload-controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .preview-content {
+                max-width: 95vw;
+                max-height: 95vh;
+            }
+
+            .preview-header {
+                padding: 12px 16px;
+            }
+
+            .preview-stats {
+                padding: 10px 16px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .preview-body {
+                padding: 12px 16px;
+            }
+
+            .preview-footer {
+                padding: 10px 16px;
+            }
+
+            .control-buttons {
+                justify-content: center;
+            }
+
+            .conversation-item {
+                padding: 8px 12px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 Claude对话切分器</h1>
-            <p>轻松切分Claude导出的对话文件，支持CoT思考分离</p>
+            <h1>Claude对话切分器</h1>
+            <p>智能解析并导出你的Claude对话记录</p>
         </div>
         
         <div class="upload-section">
-            <div class="file-input-container">
-                <input type="file" id="fileInput" class="file-input" accept=".json">
-                <button class="file-button">📁 选择 conversations.json 文件</button>
+            <div class="name-settings">
+                <div class="name-input-group">
+                    <label for="userName">用户名称</label>
+                    <input type="text" id="userName" class="name-input" value="User" placeholder="User">
+                </div>
+                <div class="name-input-group">
+                    <label for="assistantName">助手名称</label>
+                    <input type="text" id="assistantName" class="name-input" value="Claude" placeholder="Claude">
+                </div>
             </div>
-            <button id="processButton" class="process-button">🚀 开始处理</button>
+
+            <div class="upload-controls">
+                <div class="file-input-container">
+                    <input type="file" id="fileInput" class="file-input" accept=".json">
+                    <button class="file-button">选择JSON文件</button>
+                </div>
+                <button id="processButton" class="process-button">开始处理</button>
+            </div>
             
             <div id="fileInfo" class="file-info"></div>
             
@@ -363,61 +616,83 @@
                 <div class="progress-bar">
                     <div id="progressFill" class="progress-fill"></div>
                 </div>
-                <div id="status" class="status">准备处理...</div>
+                <div id="status" class="status">准备中...</div>
             </div>
         </div>
         
         <div id="results" class="results">
-            <h2>📄 处理结果</h2>
+            <div class="results-header">
+                <h2>处理结果</h2>
+            </div>
             
-            <div class="select-controls">
-                <div class="selected-count">已选择: <span id="selectedCount">0</span> 个对话</div>
-                <div>
-                    <button id="selectAllButton" class="select-all-btn">全选</button>
-                    <button id="selectNoneButton" class="select-none-btn">取消全选</button>
+            <div id="conversationList" class="conversation-list">
+                <!-- 对话列表将在这里生成 -->
+            </div>
+
+            <div class="control-section">
+                <div class="control-buttons">
+                    <button id="selectAllButton" class="control-button select-all-button">全选</button>
+                    <button id="selectNoneButton" class="control-button select-none-button">取消全选</button>
+                    <button id="downloadSelectedButton" class="control-button download-selected-button" disabled>下载选中 (<span id="selectedCount">0</span>)</button>
+                    <button id="downloadAllButton" class="control-button download-all-button">打包下载全部</button>
                 </div>
+                <div class="selection-info">提示：可预览对话内容</div>
             </div>
-            
-            <div id="conversationList" class="conversation-list"></div>
-            
-            <div class="download-controls" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-                <button id="downloadSelectedButton" class="download-selected-btn" disabled>📦 下载选中文件</button>
-                <button id="downloadAllButton" class="download-all-btn">📦 下载全部文件</button>
-            </div>
-        </div>
-        
-        <div class="footer">
-            Made with 💕 for 宝宝 | 支持Unicode解码、Thinking思考分离、完美格式化
         </div>
     </div>
-    
+
+    <!-- 预览模态窗口 -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h3 id="previewTitle" class="preview-title">对话预览</h3>
+                <button id="previewClose" class="preview-close">×</button>
+            </div>
+            <div class="preview-stats">
+                <div class="stat-item">
+                    <span>消息</span>
+                    <span id="previewMessageCount">0 条</span>
+                </div>
+                <div class="stat-item">
+                    <span>大小</span>
+                    <span id="previewSize">0 KB</span>
+                </div>
+            </div>
+            <div class="preview-body">
+                <div id="previewText" class="preview-text"></div>
+            </div>
+            <div class="preview-footer">
+                <button id="copyButton" class="footer-button copy-button">复制文本</button>
+                <button id="downloadSingleButton" class="footer-button download-single-button">下载文件</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let conversations = [];
         let processedFiles = [];
-        
-        // 格式化时间戳，强制转换为东八区时间
+        let currentPreviewIndex = -1;
+
+        // 格式化时间戳为东八区时间
         function formatTimestamp(timestampStr) {
+            if (!timestampStr) return '未知时间';
+            
             try {
-                // 解析ISO时间戳
                 let dt = new Date(timestampStr);
                 
-                // 如果是字符串格式，确保正确解析
                 if (typeof timestampStr === 'string') {
-                    // 处理Z结尾的UTC时间
                     if (timestampStr.endsWith('Z')) {
                         dt = new Date(timestampStr);
                     } else if (timestampStr.includes('T')) {
-                        dt = new Date(timestampStr + 'Z'); // 确保作为UTC处理
+                        dt = new Date(timestampStr + 'Z');
                     } else {
                         dt = new Date(timestampStr);
                     }
                 }
                 
-                // 转换为东八区时间 (UTC+8)
                 const utcTime = dt.getTime();
-                const chinaTime = new Date(utcTime + (8 * 60 * 60 * 1000)); // 加8小时
+                const chinaTime = new Date(utcTime + (8 * 60 * 60 * 1000));
                 
-                // 格式化为易读格式
                 const year = chinaTime.getUTCFullYear();
                 const month = String(chinaTime.getUTCMonth() + 1).padStart(2, '0');
                 const day = String(chinaTime.getUTCDate()).padStart(2, '0');
@@ -432,21 +707,18 @@
             }
         }
         
-        // 提取消息内容，按原始顺序处理多个CoT和正文段落
+        // 提取消息内容
         function extractMessageContent(message) {
             let mainText = "";
             let contentBlocks = [];
             
-            // 主要文本内容（作为fallback）
             if (message.text) {
                 mainText = message.text;
             }
             
-            // 处理content数组中的内容，保持原始顺序
             if (message.content && Array.isArray(message.content)) {
                 for (const contentItem of message.content) {
                     if (contentItem.type === 'thinking') {
-                        // CoT思考内容
                         const thinking = contentItem.thinking || '';
                         if (thinking.trim()) {
                             contentBlocks.push({
@@ -455,7 +727,6 @@
                             });
                         }
                     } else if (contentItem.type === 'text') {
-                        // 正文内容
                         const text = contentItem.text || '';
                         if (text.trim()) {
                             contentBlocks.push({
@@ -467,7 +738,6 @@
                 }
             }
             
-            // 如果没有content数组，使用主文本
             if (contentBlocks.length === 0 && mainText) {
                 contentBlocks.push({
                     type: 'text',
@@ -477,12 +747,15 @@
             
             return contentBlocks;
         }
-        
-        // 处理单个对话
+
+        // 处理对话数据
         function processConversation(conversation, index) {
             const convName = conversation.name || `Conversation_${index}`;
             const convUuid = conversation.uuid || `unknown_${index}`;
             const createdAt = formatTimestamp(conversation.created_at || '');
+            
+            const userName = document.getElementById('userName').value || 'User';
+            const assistantName = document.getElementById('assistantName').value || 'Claude';
             
             const messages = conversation.chat_messages || [];
             if (messages.length === 0) {
@@ -504,13 +777,11 @@
                 
                 const contentBlocks = extractMessageContent(message);
                 
-                // 时间戳用[]框起来
                 contentLines.push(`[${timestamp}]`);
                 
                 if (sender === 'human') {
-                    contentLines.push('User：');
+                    contentLines.push(`${userName}：`);
                     if (contentBlocks.length > 0) {
-                        // User通常只有一个text block
                         const textBlocks = contentBlocks.filter(block => block.type === 'text');
                         if (textBlocks.length > 0) {
                             contentLines.push(textBlocks[0].content);
@@ -521,34 +792,29 @@
                         contentLines.push('(空消息)');
                     }
                 } else if (sender === 'assistant') {
-                    contentLines.push('Claude：');
+                    contentLines.push(`${assistantName}：`);
                     
-                    // 按原始顺序处理所有content blocks
                     for (let i = 0; i < contentBlocks.length; i++) {
                         const block = contentBlocks[i];
                         
                         if (block.type === 'cot') {
                             contentLines.push('Thinking：');
                             contentLines.push(block.content);
-                            contentLines.push(''); // Thinking后空一行
+                            contentLines.push('');
                         } else if (block.type === 'text') {
-                            // 正文内容加上Text：标签
                             contentLines.push('Text：');
                             contentLines.push(block.content);
                             
-                            // 如果后面还有content block，加个空行
                             if (i < contentBlocks.length - 1) {
                                 contentLines.push('');
                             }
                         }
                     }
                     
-                    // 如果没有任何content blocks
                     if (contentBlocks.length === 0) {
                         contentLines.push('(空回复)');
                     }
                     
-                    // 只有在Claude回复后且不是最后一条消息时才加分割线
                     if (msgIdx < messages.length - 1) {
                         contentLines.push('');
                         contentLines.push('─'.repeat(20));
@@ -568,7 +834,6 @@
                     }
                 }
                 
-                // 如果不是Claude回复，只加一个空行
                 if (sender !== 'assistant' && msgIdx < messages.length - 1) {
                     contentLines.push('');
                 }
@@ -577,7 +842,13 @@
             const filename = `${String(index).padStart(3, '0')}_${convName.replace(/[<>:"/\\|?*]/g, '_').substring(0, 50)}_${convUuid.substring(0, 8)}.txt`;
             const content = contentLines.join('\n');
             
-            return { filename, content, title: convName, messageCount: messages.length, createdAt };
+            return { 
+                filename, 
+                content, 
+                title: convName, 
+                messageCount: messages.length, 
+                createdAt
+            };
         }
         
         // 文件选择处理
@@ -622,13 +893,10 @@
                         processedFiles.push(result);
                     }
                     
-                    // 添加小延迟以显示进度
                     await new Promise(resolve => setTimeout(resolve, 10));
                 }
                 
                 document.getElementById('status').textContent = `处理完成！成功处理 ${processedFiles.length} 个对话`;
-                
-                // 显示结果
                 displayResults();
                 
             } catch (error) {
@@ -644,17 +912,15 @@
             const resultsDiv = document.getElementById('results');
             const listDiv = document.getElementById('conversationList');
             
-            // 按创建时间排序（最新的在上面）
             const sortedFiles = [...processedFiles].sort((a, b) => {
                 const timeA = new Date(a.createdAt.replace(/\//g, '-')).getTime();
                 const timeB = new Date(b.createdAt.replace(/\//g, '-')).getTime();
-                return timeB - timeA; // 降序排列，最新的在上面
+                return timeB - timeA;
             });
             
             listDiv.innerHTML = '';
             
             sortedFiles.forEach((file, sortedIndex) => {
-                // 找到原始索引
                 const originalIndex = processedFiles.findIndex(f => f.filename === file.filename);
                 
                 const item = document.createElement('div');
@@ -664,22 +930,82 @@
                     <div class="conversation-info">
                         <div class="conversation-title">${file.title}</div>
                         <div class="conversation-meta">
-                            <span>${file.messageCount} 条消息</span>
+                            <span>${file.messageCount} 条</span>
                             <span>${file.createdAt}</span>
                             <span>${(file.content.length / 1024).toFixed(1)} KB</span>
                         </div>
+                    </div>
+                    <div class="conversation-actions">
+                        <button class="action-btn preview-btn" onclick="openPreview(${originalIndex})">预览</button>
+                        <button class="action-btn download-btn" onclick="downloadFile(${originalIndex})">下载</button>
                     </div>
                 `;
                 listDiv.appendChild(item);
             });
             
-            // 添加事件监听器
             setupSelectionControls();
-            
             resultsDiv.style.display = 'block';
         }
+
+        // 预览功能
+        function openPreview(index) {
+            const file = processedFiles[index];
+            currentPreviewIndex = index;
+            
+            document.getElementById('previewTitle').textContent = file.title;
+            document.getElementById('previewMessageCount').textContent = `${file.messageCount} 条`;
+            document.getElementById('previewSize').textContent = `${(file.content.length / 1024).toFixed(1)} KB`;
+            document.getElementById('previewText').textContent = file.content;
+            
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+            currentPreviewIndex = -1;
+        }
+
+        async function copyToClipboard() {
+            if (currentPreviewIndex === -1) return;
+            
+            const file = processedFiles[currentPreviewIndex];
+            try {
+                await navigator.clipboard.writeText(file.content);
+                const button = document.getElementById('copyButton');
+                const originalText = button.textContent;
+                button.textContent = '已复制';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                alert('复制失败，请手动选择文本复制');
+            }
+        }
+
+        function downloadCurrentPreview() {
+            if (currentPreviewIndex !== -1) {
+                downloadFile(currentPreviewIndex);
+            }
+        }
+
+        // 预览窗口事件
+        document.getElementById('previewClose').addEventListener('click', closePreview);
+        document.getElementById('copyButton').addEventListener('click', copyToClipboard);
+        document.getElementById('downloadSingleButton').addEventListener('click', downloadCurrentPreview);
+
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePreview();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('previewModal').style.display === 'block') {
+                closePreview();
+            }
+        });
         
-        // 设置选择控制功能
+        // 选择控制功能
         function setupSelectionControls() {
             const checkboxes = document.querySelectorAll('.conversation-checkbox');
             const selectAllBtn = document.getElementById('selectAllButton');
@@ -687,48 +1013,40 @@
             const downloadSelectedBtn = document.getElementById('downloadSelectedButton');
             const selectedCountSpan = document.getElementById('selectedCount');
             
-            // 更新选中计数
             function updateSelectedCount() {
                 const selectedCount = document.querySelectorAll('.conversation-checkbox:checked').length;
                 selectedCountSpan.textContent = selectedCount;
                 downloadSelectedBtn.disabled = selectedCount === 0;
             }
             
-            // 复选框变化事件
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateSelectedCount);
             });
             
-            // 全选按钮
             selectAllBtn.addEventListener('click', () => {
                 checkboxes.forEach(checkbox => checkbox.checked = true);
                 updateSelectedCount();
             });
             
-            // 取消全选按钮
             selectNoneBtn.addEventListener('click', () => {
                 checkboxes.forEach(checkbox => checkbox.checked = false);
                 updateSelectedCount();
             });
             
-            // 下载选中文件按钮
             downloadSelectedBtn.addEventListener('click', downloadSelectedFiles);
             
-            // 初始化计数
             updateSelectedCount();
         }
         
-        // 下载选中的文件
+        // 下载功能
         async function downloadSelectedFiles() {
             const selectedCheckboxes = document.querySelectorAll('.conversation-checkbox:checked');
             if (selectedCheckboxes.length === 0) return;
             
             if (selectedCheckboxes.length === 1) {
-                // 如果只选中一个文件，直接下载
                 const index = parseInt(selectedCheckboxes[0].dataset.index);
                 downloadFile(index);
             } else {
-                // 多个文件，打包下载
                 const JSZip = await import('https://cdn.skypack.dev/jszip');
                 const zip = new JSZip.default();
                 
@@ -748,7 +1066,6 @@
             }
         }
         
-        // 下载单个文件
         window.downloadFile = function(index) {
             const file = processedFiles[index];
             const blob = new Blob([file.content], { type: 'text/plain;charset=utf-8' });
@@ -759,12 +1076,13 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+
+        window.openPreview = openPreview;
         
         // 打包下载所有文件
         document.getElementById('downloadAllButton').addEventListener('click', async function() {
             if (processedFiles.length === 0) return;
             
-            // 使用动态导入JSZip
             const JSZip = await import('https://cdn.skypack.dev/jszip');
             const zip = new JSZip.default();
             
