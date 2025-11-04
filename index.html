@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -675,12 +675,21 @@
 
         // 格式化时间戳为东八区时间
         function formatTimestamp(timestampStr) {
-            if (!timestampStr) return '未知时间';
+            if (!timestampStr && timestampStr !== 0) return '未知时间';
             
             try {
-                let dt = new Date(timestampStr);
+                let dt;
                 
-                if (typeof timestampStr === 'string') {
+                // 处理数字类型的Unix timestamp（秒）
+                if (typeof timestampStr === 'number') {
+                    if (timestampStr < 10000000000) {
+                        // Unix timestamp in seconds
+                        dt = new Date(timestampStr * 1000);
+                    } else {
+                        // Unix timestamp in milliseconds  
+                        dt = new Date(timestampStr);
+                    }
+                } else if (typeof timestampStr === 'string') {
                     if (timestampStr.endsWith('Z')) {
                         dt = new Date(timestampStr);
                     } else if (timestampStr.includes('T')) {
@@ -688,6 +697,13 @@
                     } else {
                         dt = new Date(timestampStr);
                     }
+                } else {
+                    return '未知时间';
+                }
+                
+                // 检查日期是否有效
+                if (isNaN(dt.getTime())) {
+                    return '未知时间';
                 }
                 
                 const utcTime = dt.getTime();
@@ -703,7 +719,7 @@
                 return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
             } catch (error) {
                 console.error('时间戳转换错误:', error, timestampStr);
-                return timestampStr;
+                return '未知时间';
             }
         }
         
@@ -750,17 +766,33 @@
 
         // 处理对话数据
         function processConversation(conversation, index) {
-            const convName = conversation.name || `Conversation_${index}`;
+            const messages = conversation.chat_messages || [];
+            
+            // 过滤空对话
+            const hasValidMessages = messages.some(msg => {
+                if (!msg.text || !msg.sender) return false;
+                const text = (msg.text || '').trim();
+                return text !== '' && text !== '(空消息)' && text !== '(空回复)';
+            });
+            
+            if (!hasValidMessages || messages.length === 0) {
+                return null;
+            }
+            
+            // 过滤conversation_数字格式的name
+            let convName;
+            if (conversation.name && 
+                conversation.name.trim() !== '' && 
+                !/^conversation_\d+$/i.test(conversation.name.trim())) {
+                convName = conversation.name;
+            } else {
+                convName = `Conversation_${index}`;
+            }
             const convUuid = conversation.uuid || `unknown_${index}`;
             const createdAt = formatTimestamp(conversation.created_at || '');
             
             const userName = document.getElementById('userName').value || 'User';
             const assistantName = document.getElementById('assistantName').value || 'Claude';
-            
-            const messages = conversation.chat_messages || [];
-            if (messages.length === 0) {
-                return null;
-            }
             
             const contentLines = [];
             contentLines.push(`对话标题: ${convName}`);
@@ -882,6 +914,7 @@
                 document.getElementById('status').textContent = `找到 ${conversations.length} 个对话，正在处理...`;
                 
                 processedFiles = [];
+                let skippedCount = 0;
                 
                 for (let i = 0; i < conversations.length; i++) {
                     const progress = ((i + 1) / conversations.length) * 100;
@@ -891,12 +924,18 @@
                     const result = processConversation(conversations[i], i + 1);
                     if (result) {
                         processedFiles.push(result);
+                    } else {
+                        skippedCount++;
                     }
                     
                     await new Promise(resolve => setTimeout(resolve, 10));
                 }
                 
-                document.getElementById('status').textContent = `处理完成！成功处理 ${processedFiles.length} 个对话`;
+                let statusText = `处理完成！成功处理 ${processedFiles.length} 个对话`;
+                if (skippedCount > 0) {
+                    statusText += `，跳过 ${skippedCount} 个空对话`;
+                }
+                document.getElementById('status').textContent = statusText;
                 displayResults();
                 
             } catch (error) {
